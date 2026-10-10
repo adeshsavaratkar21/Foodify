@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foodify - Systems & Distributed Analytics</title>
+    <style>
+        :root {
+            --bg-base: #0b0e14;
+            --card-bg: rgba(255, 255, 255, 0.04);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #e8ebf1;
+            --text-muted: #9aa3b5;
+            --amber: #f0a84e;
+            --cyan: #5ed4d2;
+            --green: #6bcf8e;
+            --red: #e8697a;
+            --font-mono: "SF Mono", Consolas, monospace;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 24px;
+            background: var(--bg-base);
+            color: var(--text);
+            font-family: var(--font-sans);
+        }
+
+        header {
+            max-width: 1200px;
+            margin: 0 auto 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 14px;
+        }
+
+        header h1 {
+            margin: 0 0 6px;
+            font-size: 26px;
+        }
+
+        header h1 span {
+            color: var(--amber);
+        }
+
+        header p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 13.5px;
+        }
+
+        .nav-bar a {
+            color: var(--cyan);
+            text-decoration: none;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+
+        .panel-block {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto 20px;
+        }
+
+        .panel-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 12px;
+        }
+
+        .panel-head h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .tag {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--cyan);
+        }
+
+        .servers-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .server-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .server-card.failed {
+            border-color: rgba(232, 105, 122, 0.4);
+            background: rgba(232, 105, 122, 0.05);
+        }
+
+        .badge {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        .badge.online {
+            background: rgba(107, 207, 142, 0.15);
+            color: var(--green);
+            border: 1px solid var(--green);
+        }
+
+        .badge.failed {
+            background: rgba(232, 105, 122, 0.15);
+            color: var(--red);
+            border: 1px solid var(--red);
+        }
+
+        .badge.standby {
+            background: rgba(94, 212, 210, 0.15);
+            color: var(--cyan);
+            border: 1px solid var(--cyan);
+        }
+
+        .badge.promoted {
+            background: rgba(240, 168, 78, 0.15);
+            color: var(--amber);
+            border: 1px solid var(--amber);
+        }
+
+        .state-box {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            background: rgba(0, 0, 0, 0.35);
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            margin: 10px 0;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        input {
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-family: var(--font-mono);
+            font-size: 13px;
+        }
+
+        button {
+            padding: 8px 14px;
+            border-radius: 6px;
+            border: 1px solid transparent;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        button.primary {
+            background: var(--amber);
+            color: #1c1305;
+        }
+
+        button.danger {
+            background: rgba(232, 105, 122, 0.2);
+            color: var(--red);
+            border-color: rgba(232, 105, 122, 0.4);
+        }
+
+        button.ghost {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+            border-color: var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            padding: 8px 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: left;
+        }
+
+        th {
+            color: var(--text-muted);
+        }
+
+        .status-ok {
+            color: var(--green);
+        }
+
+        .status-fail {
+            color: var(--red);
+        }
+
+        .pipeline-stage {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border);
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="nav-bar">
+            <a href="index.html">← Back to Experiments 1–4 Dashboard</a>
+        </div>
+        <h1>Food<span>ify</span> Systems, Replication &amp; Analytics Console</h1>
+        <p>Live simulations for Experiment 5 (Fault Tolerance), Experiment 6 (Load Balancing), and Experiment 7
+            (MapReduce).</p>
+    </header>
+
+    <!-- EXP 5: REPLICATION & FAULT TOLERANCE -->
+    <div class="panel-block">
+        <div class="panel-head">
+            <h2>Exp 5: Master-Replica Fault Tolerance &amp; Audit Log</h2>
+            <span class="tag">PRIMARY-BACKUP REPLICATION</span>
+        </div>
+        <div class="servers-grid">
+            <div class="server-card" id="master-card">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <b style="font-size:12px; font-family:var(--font-mono);">MASTER SERVER (PRIMARY)</b>
+                    <span class="badge online" id="master-badge">ONLINE (PRIMARY)</span>
+                </div>
+                <div class="state-box">State: <span id="master-state">{"pizza_price":"$18", "status":"open"}</span>
+                </div>
+                <button class="danger" id="fail-master-btn" onclick="toggleMaster()">Fail Master Server</button>
+            </div>
+            <div class="server-card" id="replica-card">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <b style="font-size:12px; font-family:var(--font-mono);">REPLICA SERVER (STANDBY)</b>
+                    <span class="badge standby" id="replica-badge">STANDBY (IN-SYNC)</span>
+                </div>
+                <div class="state-box">State: <span id="replica-state">{"pizza_price":"$18", "status":"open"}</span>
+                </div>
+                <div style="display:flex; gap:6px;">
+                    <button class="primary" onclick="promoteReplica()">Promote to Primary</button>
+                    <button class="ghost" onclick="syncReplica()">Force Sync</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-row">
+            <input type="text" id="prop-key" value="pizza_price" placeholder="Key" style="width: 140px;">
+            <input type="text" id="prop-val" value="$20" placeholder="Value" style="width: 120px;">
+            <button class="primary" onclick="executeWrite()">Execute WRITE</button>
+            <button class="ghost" onclick="executeRead('MASTER')">READ Master</button>
+            <button class="ghost" onclick="executeRead('REPLICA')">READ Replica</button>
+        </div>
+
+        <div style="max-height: 180px; overflow-y: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>TIMESTAMP</th>
+                        <th>TYPE</th>
+                        <th>TARGET NODE</th>
+                        <th>OPERATION / PAYLOAD</th>
+                        <th>STATUS</th>
+                    </tr>
+                </thead>
+                <tbody id="audit-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- EXP 6: DYNAMIC LOAD BALANCING -->
+    <div class="panel-block">
+        <div class="panel-head">
+            <h2>Exp 6: Dynamic Round-Robin Load Balancer</h2>
+            <span class="tag">TRAFFIC DISTRIBUTION</span>
+        </div>
+        <div class="btn-row">
+            <button class="primary" onclick="dispatchTraffic()">Simulate Incoming Order Request</button>
+            <button class="ghost" onclick="resetLoadBalancer()">Reset Counters</button>
+        </div>
+        <div class="servers-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="server-card">
+                <b style="font-family:var(--font-mono); font-size:13px;">Dispatch Node 1 (North)</b>
+                <div class="state-box">Assigned Tasks: <span id="lb-cnt-0">0</span></div>
+            </div>
+            <div class="server-card">
+                <b style="font-family:var(--font-mono); font-size:13px;">Dispatch Node 2 (West)</b>
+                <div class="state-box">Assigned Tasks: <span id="lb-cnt-1">0</span></div>
+            </div>
+            <div class="server-card">
+                <b style="font-family:var(--font-mono); font-size:13px;">Dispatch Node 3 (South)</b>
+                <div class="state-box">Assigned Tasks: <span id="lb-cnt-2">0</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EXP 7: MAPREDUCE ANALYTICS -->
+    <div class="panel-block">
+        <div class="panel-head">
+            <h2>Exp 7: MapReduce Batch Popularity Analytics</h2>
+            <span class="tag">MAPPER / SHUFFLE / REDUCER</span>
+        </div>
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:8px;">
+            Simulates distributed batch aggregation for dish popularity over the input batch stream.
+        </p>
+        <div class="btn-row">
+            <input type="text" id="mr-input" value="Pizza, Burger, Pizza, Pasta, Pizza, Burger" style="flex:1;">
+            <button class="primary" onclick="runMapReduce()">Run MapReduce</button>
+        </div>
+        <div class="pipeline-stage" id="mr-map">Map Stage: Awaiting input...</div>
+        <div class="pipeline-stage" id="mr-shuffle">Shuffle &amp; Sort: Awaiting mapping...</div>
+        <div class="pipeline-stage" id="mr-reduce">Reduce Stage: Awaiting completion...</div>
+    </div>
+
+    <script>
+        // --- Exp 5 Replication Logic ---
+        let masterOnline = true;
+        let replicaPromoted = false;
+        let masterData = { pizza_price: "$18", status: "open" };
+        let replicaData = { pizza_price: "$18", status: "open" };
+
+        function getNow() {
+            const d = new Date();
+            return d.toTimeString().split(' ')[0] + '.' + String(d.getMilliseconds()).padStart(3, '0');
+        }
+
+        function addLog(type, target, op, status, ok = true) {
+            const tbody = document.getElementById('audit-body');
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+        <td>${getNow()}</td>
+        <td><b>${type}</b></td>
+        <td>${target}</td>
+        <td>${op}</td>
+        <td class="${ok ? 'status-ok' : 'status-fail'}">${status}</td>
+      `;
+            tbody.prepend(tr);
+        }
+
+        function syncUI() {
+            document.getElementById('master-state').textContent = JSON.stringify(masterData);
+            document.getElementById('replica-state').textContent = JSON.stringify(replicaData);
+
+            const mCard = document.getElementById('master-card');
+            const mBadge = document.getElementById('master-badge');
+            const mBtn = document.getElementById('fail-master-btn');
+
+            if (masterOnline) {
+                mCard.className = 'server-card';
+                mBadge.className = 'badge online';
+                mBadge.textContent = 'ONLINE (PRIMARY)';
+                mBtn.textContent = 'Fail Master Server';
+                mBtn.className = 'danger';
+            } else {
+                mCard.className = 'server-card failed';
+                mBadge.className = 'badge failed';
+                mBadge.textContent = 'CRASHED / OFFLINE';
+                mBtn.textContent = 'Recover Master Server';
+                mBtn.className = 'ghost';
+            }
+
+            const rBadge = document.getElementById('replica-badge');
+            if (replicaPromoted) {
+                rBadge.className = 'badge promoted';
+                rBadge.textContent = 'PROMOTED (ACTIVE PRIMARY)';
+            } else {
+                rBadge.className = 'badge standby';
+                rBadge.textContent = 'STANDBY (IN-SYNC)';
+            }
+        }
+
+        function toggleMaster() {
+            masterOnline = !masterOnline;
+            if (!masterOnline) {
+                addLog('FAULT', 'MASTER', 'Master server failure simulated', 'FAULT', false);
+            } else {
+                addLog('SYSTEM', 'MASTER', 'Master recovered', 'SUCCESS', true);
+            }
+            syncUI();
+        }
+
+        function promoteReplica() {
+            replicaPromoted = true;
+            addLog('FAILOVER', 'REPLICA', 'Replica promoted to Primary coordinator', 'SUCCESS', true);
+            syncUI();
+        }
+
+        function syncReplica() {
+            if (!masterOnline) {
+                addLog('SYNC', 'REPLICA', 'Cannot sync: Primary Master is offline', 'ERROR', false);
+                return;
+            }
+            replicaData = JSON.parse(JSON.stringify(masterData));
+            addLog('SYNC', 'REPLICA', 'State synchronized from master', 'SUCCESS', true);
+            syncUI();
+        }
+
+        function executeWrite() {
+            const k = document.getElementById('prop-key').value.trim();
+            const v = document.getElementById('prop-val').value.trim();
+            if (!k || !v) return;
+
+            if (masterOnline) {
+                masterData[k] = v;
+                replicaData[k] = v;
+                addLog('WRITE', 'MASTER', `SET ${k} = "${v}"`, 'SUCCESS', true);
+                addLog('REPLICATE', 'REPLICA', `Replicated ${k} = "${v}"`, 'SUCCESS', true);
+            } else if (replicaPromoted) {
+                replicaData[k] = v;
+                addLog('WRITE', 'REPLICA (PROMOTED)', `SET ${k} = "${v}"`, 'SUCCESS', true);
+            } else {
+                addLog('WRITE', 'MASTER', `Primary offline and replica not promoted`, 'FAILED', false);
+            }
+            syncUI();
+        }
+
+        function executeRead(node) {
+            const k = document.getElementById('prop-key').value.trim();
+            if (node === 'MASTER') {
+                if (!masterOnline) {
+                    addLog('READ', 'MASTER', `GET ${k} -> Connection timed out`, 'FAILED', false);
+                } else {
+                    addLog('READ', 'MASTER', `GET ${k} -> "${masterData[k] || 'null'}"`, 'SUCCESS', true);
+                }
+            } else {
+                addLog('READ', 'REPLICA', `GET ${k} -> "${replicaData[k] || 'null'}"`, 'SUCCESS', true);
+            }
+        }
+
+        // --- Exp 6 Load Balancer ---
+        let lbIndex = 0;
+        const lbCounts = [0, 0, 0];
+        function dispatchTraffic() {
+            lbCounts[lbIndex]++;
+            document.getElementById(`lb-cnt-${lbIndex}`).textContent = lbCounts[lbIndex];
+            lbIndex = (lbIndex + 1) % 3;
+        }
+        function resetLoadBalancer() {
+            lbCounts[0] = 0; lbCounts[1] = 0; lbCounts[2] = 0;
+            lbIndex = 0;
+            for (let i = 0; i < 3; i++) document.getElementById(`lb-cnt-${i}`).textContent = 0;
+        }
+
+        // --- Exp 7 MapReduce Simulation ---
+        function runMapReduce() {
+            const text = document.getElementById('mr-input').value;
+            const items = text.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+
+            // 1. Map Stage: (word -> 1)
+            const mapped = items.map(w => `(${w}, 1)`);
+            document.getElementById('mr-map').textContent = `Map Stage: [ ${mapped.join(', ')} ]`;
+
+            // 2. Shuffle & Sort: group by key
+            const grouped = {};
+            items.forEach(w => { grouped[w] = grouped[w] ? [...grouped[w], 1] : [1]; });
+            const shuffleText = Object.entries(grouped).map(([k, v]) => `(${k} -> [${v.join(',')}])`).join(' | ');
+            document.getElementById('mr-shuffle').textContent = `Shuffle Stage: ${shuffleText}`;
+
+            // 3. Reduce Stage: sum
+            const reduced = Object.entries(grouped).map(([k, v]) => `(${k}: ${v.reduce((a, b) => a + b, 0)})`).join(' | ');
+            document.getElementById('mr-reduce').textContent = `Reduce Final Output: ${reduced}`;
+        }
+
+        addLog('SYSTEM', 'CLUSTER', 'Master and Replica Nodes Initialized', 'SUCCESS', true);
+        syncUI();
+    </script>
+</body>
+
+</html>
