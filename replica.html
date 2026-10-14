@@ -1,233 +1,488 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Foodify - Systems & Distributed Analytics</title>
+    <title>Foodify - Systems &amp; Distributed Analytics</title>
+    <!-- Modern Typography: Plus Jakarta Sans & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-base: #0b0e14;
-            --card-bg: rgba(255, 255, 255, 0.04);
-            --border: rgba(255, 255, 255, 0.08);
-            --text: #e8ebf1;
-            --text-muted: #9aa3b5;
-            --amber: #f0a84e;
-            --cyan: #5ed4d2;
-            --green: #6bcf8e;
-            --red: #e8697a;
-            --font-mono: "SF Mono", Consolas, monospace;
-            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            /* Natural Color Palette Swatches */
+            --c-slate: #3E5B8F;
+            --c-mauve: #AB5B84;
+            --c-honey: #FFCA70;
+            --c-peach: #FFA789;
+            --c-coral: #FF6064;
+
+            /* Warm Natural Theme (Default) */
+            --bg-page: #FAF8F5;
+            --bg-page-gradient: radial-gradient(at 0% 0%, rgba(255, 202, 112, 0.12) 0px, transparent 45%),
+                                radial-gradient(at 100% 0%, rgba(255, 96, 100, 0.08) 0px, transparent 40%),
+                                radial-gradient(at 50% 100%, rgba(62, 91, 143, 0.06) 0px, transparent 50%);
+            --bg-card: #FFFFFF;
+            --bg-card-subtle: #F6F3EC;
+            --bg-input: #FFFFFF;
+            --border: #E8E0D5;
+            --border-hover: #D5CCC0;
+            --border-focus: var(--c-slate);
+
+            --text: #1C2433;
+            --text-muted: #5F6D82;
+            --text-light: #8E9BAE;
+
+            --shadow-sm: 0 1px 3px rgba(30, 41, 59, 0.05);
+            --shadow-card: 0 4px 20px -2px rgba(62, 91, 143, 0.07), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
+            --shadow-card-hover: 0 10px 28px -4px rgba(62, 91, 143, 0.14), 0 3px 10px -2px rgba(0, 0, 0, 0.05);
+
+            --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            --font-mono: 'JetBrains Mono', Consolas, monospace;
+
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+
+        [data-theme="dark"] {
+            --bg-page: #151C28;
+            --bg-page-gradient: radial-gradient(at 0% 0%, rgba(62, 91, 143, 0.22) 0px, transparent 50%),
+                                radial-gradient(at 100% 0%, rgba(171, 91, 132, 0.18) 0px, transparent 45%),
+                                radial-gradient(at 50% 100%, rgba(255, 202, 112, 0.08) 0px, transparent 55%);
+            --bg-card: #1D2637;
+            --bg-card-subtle: #242F43;
+            --bg-input: #182030;
+            --border: #2C394F;
+            --border-hover: #3E5B8F;
+            --border-focus: var(--c-peach);
+
+            --text: #F3F5F9;
+            --text-muted: #A8B4C7;
+            --text-light: #738299;
+
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+            --shadow-card: 0 6px 22px -2px rgba(0, 0, 0, 0.35);
+            --shadow-card-hover: 0 12px 32px -4px rgba(0, 0, 0, 0.5);
         }
 
         * {
             box-sizing: border-box;
+            transition: background-color 0.25s ease, border-color 0.25s ease, color 0.2s ease;
         }
 
         body {
             margin: 0;
-            padding: 24px;
-            background: var(--bg-base);
+            padding: 28px 24px;
+            background: var(--bg-page);
+            background-image: var(--bg-page-gradient);
+            background-attachment: fixed;
             color: var(--text);
             font-family: var(--font-sans);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
         }
 
         header {
-            max-width: 1200px;
-            margin: 0 auto 20px;
+            max-width: 1240px;
+            margin: 0 auto 24px;
             border-bottom: 1px solid var(--border);
-            padding-bottom: 14px;
+            padding-bottom: 18px;
+        }
+
+        .top-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .nav-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-card);
+            color: var(--c-slate);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+        }
+
+        .nav-back-btn:hover {
+            background: var(--c-slate);
+            color: #FFFFFF;
+            border-color: var(--c-slate);
+            transform: translateY(-1px);
+        }
+
+        .toolbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .theme-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            padding: 0;
+            font-size: 17px;
+            color: var(--text);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+        }
+
+        .theme-btn:hover {
+            border-color: var(--c-slate);
+            transform: scale(1.08);
+            box-shadow: 0 2px 8px rgba(62, 91, 143, 0.15);
         }
 
         header h1 {
-            margin: 0 0 6px;
-            font-size: 26px;
+            margin: 0 0 8px;
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--text);
         }
 
         header h1 span {
-            color: var(--amber);
+            color: var(--c-coral);
+            background: linear-gradient(135deg, var(--c-coral) 0%, var(--c-mauve) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         header p {
             margin: 0;
             color: var(--text-muted);
-            font-size: 13.5px;
+            font-size: 14px;
+            line-height: 1.5;
         }
 
-        .nav-bar a {
-            color: var(--cyan);
-            text-decoration: none;
-            font-family: var(--font-mono);
-            font-size: 13px;
-            display: inline-block;
-            margin-bottom: 12px;
-        }
-
+        /* Panel Blocks */
         .panel-block {
-            background: var(--card-bg);
+            background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto 20px;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            max-width: 1240px;
+            margin: 0 auto 24px;
+            box-shadow: var(--shadow-card);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .panel-block:hover {
+            box-shadow: var(--shadow-card-hover);
+            border-color: var(--border-hover);
         }
 
         .panel-head {
             display: flex;
             justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 12px;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
         }
 
         .panel-head h2 {
             margin: 0;
             font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
         }
 
         .tag {
             font-family: var(--font-mono);
             font-size: 11px;
-            color: var(--cyan);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .tag.tag-slate {
+            background: rgba(62, 91, 143, 0.12);
+            color: var(--c-slate);
+            border: 1px solid rgba(62, 91, 143, 0.25);
+        }
+
+        .tag.tag-mauve {
+            background: rgba(171, 91, 132, 0.12);
+            color: var(--c-mauve);
+            border: 1px solid rgba(171, 91, 132, 0.25);
+        }
+
+        .tag.tag-coral {
+            background: rgba(255, 96, 100, 0.12);
+            color: var(--c-coral);
+            border: 1px solid rgba(255, 96, 100, 0.25);
         }
 
         .servers-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 16px;
+            gap: 18px;
+            margin-bottom: 18px;
         }
 
         .server-card {
-            background: rgba(255, 255, 255, 0.02);
+            background: var(--bg-card-subtle);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px;
+            border-radius: var(--radius-md);
+            padding: 18px;
+            transition: all 0.2s ease;
         }
 
         .server-card.failed {
-            border-color: rgba(232, 105, 122, 0.4);
-            background: rgba(232, 105, 122, 0.05);
+            border-color: rgba(255, 96, 100, 0.4);
+            background: rgba(255, 96, 100, 0.05);
         }
 
+        /* Status Badges */
         .badge {
             font-family: var(--font-mono);
             font-size: 11px;
-            padding: 3px 8px;
-            border-radius: 4px;
+            font-weight: 600;
+            padding: 4px 9px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .badge.online {
-            background: rgba(107, 207, 142, 0.15);
-            color: var(--green);
-            border: 1px solid var(--green);
+            background: rgba(62, 91, 143, 0.12);
+            color: var(--c-slate);
+            border: 1px solid rgba(62, 91, 143, 0.3);
         }
 
         .badge.failed {
-            background: rgba(232, 105, 122, 0.15);
-            color: var(--red);
-            border: 1px solid var(--red);
+            background: rgba(255, 96, 100, 0.14);
+            color: var(--c-coral);
+            border: 1px solid rgba(255, 96, 100, 0.35);
         }
 
         .badge.standby {
-            background: rgba(94, 212, 210, 0.15);
-            color: var(--cyan);
-            border: 1px solid var(--cyan);
+            background: rgba(171, 91, 132, 0.14);
+            color: var(--c-mauve);
+            border: 1px solid rgba(171, 91, 132, 0.35);
         }
 
         .badge.promoted {
-            background: rgba(240, 168, 78, 0.15);
-            color: var(--amber);
-            border: 1px solid var(--amber);
+            background: rgba(255, 202, 112, 0.25);
+            color: #8C5900;
+            border: 1px solid rgba(255, 202, 112, 0.45);
+        }
+
+        [data-theme="dark"] .badge.promoted {
+            color: var(--c-honey);
         }
 
         .state-box {
             font-family: var(--font-mono);
             font-size: 13px;
-            background: rgba(0, 0, 0, 0.35);
-            padding: 10px;
-            border-radius: 6px;
+            background: var(--bg-card);
+            padding: 12px 14px;
+            border-radius: var(--radius-sm);
             border: 1px solid var(--border);
-            margin: 10px 0;
+            margin: 12px 0;
+            color: var(--text);
+            overflow-x: auto;
         }
 
         .btn-row {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             flex-wrap: wrap;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
+            align-items: center;
         }
 
         input {
-            padding: 8px 12px;
-            background: rgba(255, 255, 255, 0.03);
+            padding: 10px 14px;
+            background: var(--bg-input);
             border: 1px solid var(--border);
-            border-radius: 6px;
+            border-radius: var(--radius-sm);
             color: var(--text);
             font-family: var(--font-mono);
             font-size: 13px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        input:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(62, 91, 143, 0.15);
         }
 
         button {
-            padding: 8px 14px;
-            border-radius: 6px;
+            padding: 9px 16px;
+            border-radius: var(--radius-sm);
             border: 1px solid transparent;
+            font-family: var(--font-sans);
             font-weight: 600;
             cursor: pointer;
             font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s ease;
         }
 
         button.primary {
-            background: var(--amber);
-            color: #1c1305;
+            background: linear-gradient(135deg, var(--c-slate) 0%, #2e4672 100%);
+            color: #FFFFFF;
+            box-shadow: 0 2px 8px rgba(62, 91, 143, 0.25);
+        }
+
+        button.primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(62, 91, 143, 0.35);
+        }
+
+        button.accent {
+            background: linear-gradient(135deg, var(--c-coral) 0%, #e64a4e 100%);
+            color: #FFFFFF;
+            box-shadow: 0 2px 8px rgba(255, 96, 100, 0.25);
+        }
+
+        button.accent:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(255, 96, 100, 0.35);
         }
 
         button.danger {
-            background: rgba(232, 105, 122, 0.2);
-            color: var(--red);
-            border-color: rgba(232, 105, 122, 0.4);
+            background: rgba(255, 96, 100, 0.12);
+            color: var(--c-coral);
+            border: 1px solid rgba(255, 96, 100, 0.3);
+        }
+
+        button.danger:hover {
+            background: var(--c-coral);
+            color: #FFFFFF;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(255, 96, 100, 0.3);
         }
 
         button.ghost {
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--bg-card-subtle);
             color: var(--text);
-            border-color: var(--border);
+            border: 1px solid var(--border);
+        }
+
+        button.ghost:hover {
+            border-color: var(--c-slate);
+            color: var(--c-slate);
+            background: var(--bg-card);
+        }
+
+        /* Table Styling */
+        .table-container {
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            background: var(--bg-card);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             font-family: var(--font-mono);
-            font-size: 12px;
-            margin-top: 10px;
+            font-size: 12.5px;
         }
 
         th,
         td {
-            padding: 8px 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
             text-align: left;
         }
 
         th {
-            color: var(--text-muted);
+            background: var(--bg-card-subtle);
+            color: var(--c-slate);
+            font-weight: 700;
+            font-size: 11.5px;
+            letter-spacing: 0.5px;
+        }
+
+        [data-theme="dark"] th {
+            color: #A8B4C7;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
         }
 
         .status-ok {
-            color: var(--green);
+            color: var(--c-slate);
+            font-weight: 600;
         }
 
         .status-fail {
-            color: var(--red);
+            color: var(--c-coral);
+            font-weight: 600;
         }
 
-        .pipeline-stage {
-            background: rgba(0, 0, 0, 0.25);
-            border: 1px solid var(--border);
-            padding: 10px 14px;
+        /* Load Balancer Task Pill */
+        .task-counter-pill {
+            display: inline-block;
+            background: rgba(255, 202, 112, 0.25);
+            color: #8C5900;
+            border: 1px solid rgba(255, 202, 112, 0.45);
+            padding: 2px 8px;
             border-radius: 6px;
+            font-weight: 700;
+        }
+
+        [data-theme="dark"] .task-counter-pill {
+            color: var(--c-honey);
+        }
+
+        /* Exp 7: MapReduce Pipeline Stages */
+        .pipeline-stage {
+            background: var(--bg-card-subtle);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--c-slate);
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
             font-family: var(--font-mono);
-            font-size: 12px;
-            margin-top: 8px;
+            font-size: 13px;
+            margin-top: 10px;
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        .pipeline-stage.map {
+            border-left-color: var(--c-slate);
+        }
+
+        .pipeline-stage.shuffle {
+            border-left-color: var(--c-mauve);
+        }
+
+        .pipeline-stage.reduce {
+            border-left-color: var(--c-coral);
+            background: rgba(255, 96, 100, 0.05);
         }
     </style>
 </head>
@@ -235,38 +490,43 @@
 <body>
 
     <header>
-        <div class="nav-bar">
-            <a href="index.html">← Back to Experiments 1–4 Dashboard</a>
+        <div class="top-toolbar">
+            <a href="index.html" class="nav-back-btn">
+                <span>← Back to Experiments 1–4 Dashboard</span>
+            </a>
+            <div class="toolbar-actions">
+                <button class="theme-btn" id="theme-toggle" type="button" onclick="toggleTheme()" title="Toggle Theme" aria-label="Toggle Theme">
+                    <span id="theme-icon">☀️</span>
+                </button>
+            </div>
         </div>
+
         <h1>Food<span>ify</span> Systems, Replication &amp; Analytics Console</h1>
-        <p>Live simulations for Experiment 5 (Fault Tolerance), Experiment 6 (Load Balancing), and Experiment 7
-            (MapReduce).</p>
+        <p>Live simulations for Experiment 5 (Primary-Backup Fault Tolerance &amp; Audit Log), Experiment 6 (Round-Robin Load Balancing), and Experiment 7 (MapReduce Batch Aggregation).</p>
     </header>
 
     <!-- EXP 5: REPLICATION & FAULT TOLERANCE -->
     <div class="panel-block">
         <div class="panel-head">
             <h2>Exp 5: Master-Replica Fault Tolerance &amp; Audit Log</h2>
-            <span class="tag">PRIMARY-BACKUP REPLICATION</span>
+            <span class="tag tag-slate">PRIMARY-BACKUP REPLICATION</span>
         </div>
         <div class="servers-grid">
             <div class="server-card" id="master-card">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <b style="font-size:12px; font-family:var(--font-mono);">MASTER SERVER (PRIMARY)</b>
+                    <b style="font-size:12px; font-family:var(--font-mono); color:var(--text-muted);">MASTER SERVER (PRIMARY)</b>
                     <span class="badge online" id="master-badge">ONLINE (PRIMARY)</span>
                 </div>
-                <div class="state-box">State: <span id="master-state">{"pizza_price":"$18", "status":"open"}</span>
-                </div>
+                <div class="state-box">State: <span id="master-state">{"pizza_price":"$18", "status":"open"}</span></div>
                 <button class="danger" id="fail-master-btn" onclick="toggleMaster()">Fail Master Server</button>
             </div>
             <div class="server-card" id="replica-card">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <b style="font-size:12px; font-family:var(--font-mono);">REPLICA SERVER (STANDBY)</b>
+                    <b style="font-size:12px; font-family:var(--font-mono); color:var(--text-muted);">REPLICA SERVER (STANDBY)</b>
                     <span class="badge standby" id="replica-badge">STANDBY (IN-SYNC)</span>
                 </div>
-                <div class="state-box">State: <span id="replica-state">{"pizza_price":"$18", "status":"open"}</span>
-                </div>
-                <div style="display:flex; gap:6px;">
+                <div class="state-box">State: <span id="replica-state">{"pizza_price":"$18", "status":"open"}</span></div>
+                <div style="display:flex; gap:8px;">
                     <button class="primary" onclick="promoteReplica()">Promote to Primary</button>
                     <button class="ghost" onclick="syncReplica()">Force Sync</button>
                 </div>
@@ -276,12 +536,12 @@
         <div class="btn-row">
             <input type="text" id="prop-key" value="pizza_price" placeholder="Key" style="width: 140px;">
             <input type="text" id="prop-val" value="$20" placeholder="Value" style="width: 120px;">
-            <button class="primary" onclick="executeWrite()">Execute WRITE</button>
+            <button class="accent" onclick="executeWrite()">Execute WRITE</button>
             <button class="ghost" onclick="executeRead('MASTER')">READ Master</button>
             <button class="ghost" onclick="executeRead('REPLICA')">READ Replica</button>
         </div>
 
-        <div style="max-height: 180px; overflow-y: auto;">
+        <div class="table-container" style="max-height: 200px; overflow-y: auto;">
             <table>
                 <thead>
                     <tr>
@@ -301,7 +561,7 @@
     <div class="panel-block">
         <div class="panel-head">
             <h2>Exp 6: Dynamic Round-Robin Load Balancer</h2>
-            <span class="tag">TRAFFIC DISTRIBUTION</span>
+            <span class="tag tag-mauve">TRAFFIC DISTRIBUTION</span>
         </div>
         <div class="btn-row">
             <button class="primary" onclick="dispatchTraffic()">Simulate Incoming Order Request</button>
@@ -309,16 +569,16 @@
         </div>
         <div class="servers-grid" style="grid-template-columns: repeat(3, 1fr);">
             <div class="server-card">
-                <b style="font-family:var(--font-mono); font-size:13px;">Dispatch Node 1 (North)</b>
-                <div class="state-box">Assigned Tasks: <span id="lb-cnt-0">0</span></div>
+                <b style="font-family:var(--font-mono); font-size:13px; color:var(--c-slate);">Dispatch Node 1 (North)</b>
+                <div class="state-box">Assigned Tasks: <span class="task-counter-pill" id="lb-cnt-0">0</span></div>
             </div>
             <div class="server-card">
-                <b style="font-family:var(--font-mono); font-size:13px;">Dispatch Node 2 (West)</b>
-                <div class="state-box">Assigned Tasks: <span id="lb-cnt-1">0</span></div>
+                <b style="font-family:var(--font-mono); font-size:13px; color:var(--c-mauve);">Dispatch Node 2 (West)</b>
+                <div class="state-box">Assigned Tasks: <span class="task-counter-pill" id="lb-cnt-1">0</span></div>
             </div>
             <div class="server-card">
-                <b style="font-family:var(--font-mono); font-size:13px;">Dispatch Node 3 (South)</b>
-                <div class="state-box">Assigned Tasks: <span id="lb-cnt-2">0</span></div>
+                <b style="font-family:var(--font-mono); font-size:13px; color:var(--c-coral);">Dispatch Node 3 (South)</b>
+                <div class="state-box">Assigned Tasks: <span class="task-counter-pill" id="lb-cnt-2">0</span></div>
             </div>
         </div>
     </div>
@@ -327,21 +587,47 @@
     <div class="panel-block">
         <div class="panel-head">
             <h2>Exp 7: MapReduce Batch Popularity Analytics</h2>
-            <span class="tag">MAPPER / SHUFFLE / REDUCER</span>
+            <span class="tag tag-coral">MAPPER / SHUFFLE / REDUCER</span>
         </div>
-        <p style="font-size:13px; color:var(--text-muted); margin-bottom:8px;">
-            Simulates distributed batch aggregation for dish popularity over the input batch stream.
+        <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:12px; line-height:1.5;">
+            Simulates distributed batch aggregation for dish popularity over the input batch stream using Mapper, Shuffle &amp; Sort, and Reducer stages.
         </p>
         <div class="btn-row">
             <input type="text" id="mr-input" value="Pizza, Burger, Pizza, Pasta, Pizza, Burger" style="flex:1;">
-            <button class="primary" onclick="runMapReduce()">Run MapReduce</button>
+            <button class="accent" onclick="runMapReduce()">Run MapReduce</button>
         </div>
-        <div class="pipeline-stage" id="mr-map">Map Stage: Awaiting input...</div>
-        <div class="pipeline-stage" id="mr-shuffle">Shuffle &amp; Sort: Awaiting mapping...</div>
-        <div class="pipeline-stage" id="mr-reduce">Reduce Stage: Awaiting completion...</div>
+        <div class="pipeline-stage map" id="mr-map">Map Stage: Awaiting input...</div>
+        <div class="pipeline-stage shuffle" id="mr-shuffle">Shuffle &amp; Sort: Awaiting mapping...</div>
+        <div class="pipeline-stage reduce" id="mr-reduce">Reduce Stage: Awaiting completion...</div>
     </div>
 
     <script>
+        // --- Theme Toggle Logic ---
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            const newTheme = isDark ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('foodify_theme', newTheme);
+            updateThemeButton(newTheme);
+        }
+
+        function updateThemeButton(theme) {
+            const icon = document.getElementById('theme-icon');
+            const btn = document.getElementById('theme-toggle');
+            if (theme === 'dark') {
+                icon.textContent = '🌙';
+                if (btn) btn.setAttribute('title', 'Switch to Light Mode');
+            } else {
+                icon.textContent = '☀️';
+                if (btn) btn.setAttribute('title', 'Switch to Dark Mode');
+            }
+        }
+
+        const savedTheme = localStorage.getItem('foodify_theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeButton(savedTheme);
+
         // --- Exp 5 Replication Logic ---
         let masterOnline = true;
         let replicaPromoted = false;
@@ -357,12 +643,12 @@
             const tbody = document.getElementById('audit-body');
             const tr = document.createElement('tr');
             tr.innerHTML = `
-        <td>${getNow()}</td>
-        <td><b>${type}</b></td>
-        <td>${target}</td>
-        <td>${op}</td>
-        <td class="${ok ? 'status-ok' : 'status-fail'}">${status}</td>
-      `;
+                <td>${getNow()}</td>
+                <td><b>${type}</b></td>
+                <td>${target}</td>
+                <td>${op}</td>
+                <td class="${ok ? 'status-ok' : 'status-fail'}">${ok ? '✓ ' : '⚠ '}${status}</td>
+            `;
             tbody.prepend(tr);
         }
 

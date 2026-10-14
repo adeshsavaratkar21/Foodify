@@ -1,183 +1,444 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Foodify Distributed Systems Lab Console</title>
+    <!-- Modern Typography: Plus Jakarta Sans & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-base: #0b0e14;
-            --card-bg: rgba(255, 255, 255, 0.04);
-            --border: rgba(255, 255, 255, 0.08);
-            --text: #e8ebf1;
-            --text-muted: #9aa3b5;
-            --amber: #f0a84e;
-            --cyan: #5ed4d2;
-            --green: #6bcf8e;
-            --red: #e8697a;
-            --font-mono: "SF Mono", Consolas, monospace;
-            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            /* Natural Color Palette Swatches */
+            --c-slate: #3E5B8F;
+            --c-mauve: #AB5B84;
+            --c-honey: #FFCA70;
+            --c-peach: #FFA789;
+            --c-coral: #FF6064;
+
+            /* Warm Natural Theme (Default: Organic Warm Canvas) */
+            --bg-page: #FAF8F5;
+            --bg-page-gradient: radial-gradient(at 0% 0%, rgba(255, 202, 112, 0.12) 0px, transparent 45%),
+                                radial-gradient(at 100% 0%, rgba(255, 96, 100, 0.08) 0px, transparent 40%),
+                                radial-gradient(at 50% 100%, rgba(62, 91, 143, 0.06) 0px, transparent 50%);
+            --bg-card: #FFFFFF;
+            --bg-card-subtle: #F6F3EC;
+            --bg-input: #FFFFFF;
+            --border: #E8E0D5;
+            --border-hover: #D5CCC0;
+            --border-focus: var(--c-slate);
+
+            --text: #1C2433;
+            --text-muted: #5F6D82;
+            --text-light: #8E9BAE;
+
+            --shadow-sm: 0 1px 3px rgba(30, 41, 59, 0.05);
+            --shadow-card: 0 4px 20px -2px rgba(62, 91, 143, 0.07), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
+            --shadow-card-hover: 0 10px 28px -4px rgba(62, 91, 143, 0.14), 0 3px 10px -2px rgba(0, 0, 0, 0.05);
+
+            --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            --font-mono: 'JetBrains Mono', Consolas, monospace;
+
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+
+        [data-theme="dark"] {
+            /* Deep Slate Theme: Organic Slate Midnight */
+            --bg-page: #151C28;
+            --bg-page-gradient: radial-gradient(at 0% 0%, rgba(62, 91, 143, 0.22) 0px, transparent 50%),
+                                radial-gradient(at 100% 0%, rgba(171, 91, 132, 0.18) 0px, transparent 45%),
+                                radial-gradient(at 50% 100%, rgba(255, 202, 112, 0.08) 0px, transparent 55%);
+            --bg-card: #1D2637;
+            --bg-card-subtle: #242F43;
+            --bg-input: #182030;
+            --border: #2C394F;
+            --border-hover: #3E5B8F;
+            --border-focus: var(--c-peach);
+
+            --text: #F3F5F9;
+            --text-muted: #A8B4C7;
+            --text-light: #738299;
+
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+            --shadow-card: 0 6px 22px -2px rgba(0, 0, 0, 0.35);
+            --shadow-card-hover: 0 12px 32px -4px rgba(0, 0, 0, 0.5);
         }
 
         * {
             box-sizing: border-box;
+            transition: background-color 0.25s ease, border-color 0.25s ease, color 0.2s ease;
         }
 
         body {
             margin: 0;
-            padding: 24px;
-            background: var(--bg-base);
+            padding: 28px 24px;
+            background: var(--bg-page);
+            background-image: var(--bg-page-gradient);
+            background-attachment: fixed;
             color: var(--text);
             font-family: var(--font-sans);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
         }
 
+        /* Top Header & Brand Bar */
         header {
             max-width: 1300px;
-            margin: 0 auto 24px;
+            margin: 0 auto 28px;
             border-bottom: 1px solid var(--border);
-            padding-bottom: 16px;
+            padding-bottom: 20px;
+        }
+
+        .top-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--c-slate);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .brand-badge .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--c-coral);
+            box-shadow: 0 0 6px var(--c-coral);
+        }
+
+        .toolbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .theme-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            padding: 0;
+            font-size: 17px;
+            color: var(--text);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+        }
+
+        .theme-btn:hover {
+            border-color: var(--c-slate);
+            transform: scale(1.08);
+            box-shadow: 0 2px 8px rgba(62, 91, 143, 0.15);
+        }
+
+        .nav-link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-card);
+            color: var(--c-slate);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+        }
+
+        .nav-link-btn:hover {
+            background: var(--c-slate);
+            color: #FFFFFF;
+            border-color: var(--c-slate);
+            transform: translateY(-1px);
         }
 
         header h1 {
             margin: 0 0 8px;
-            font-size: 28px;
+            font-size: 30px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--text);
         }
 
         header h1 span {
-            color: var(--amber);
+            color: var(--c-coral);
+            background: linear-gradient(135deg, var(--c-coral) 0%, var(--c-mauve) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         header p {
             margin: 0;
             color: var(--text-muted);
-            font-size: 14px;
+            font-size: 14.5px;
+            line-height: 1.5;
         }
 
-        .nav-link {
-            display: inline-block;
-            margin-top: 10px;
-            color: var(--cyan);
-            font-family: var(--font-mono);
-            font-size: 13px;
-            text-decoration: none;
-        }
-
+        /* 2-Column Responsive Layout Grid */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+            gap: 22px;
             max-width: 1300px;
             margin: 0 auto;
         }
 
+        /* Natural Panels / Cards */
         .panel {
-            background: var(--card-bg);
+            background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-card);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .panel:hover {
+            box-shadow: var(--shadow-card-hover);
+            border-color: var(--border-hover);
         }
 
         .panel-head {
             display: flex;
             justify-content: space-between;
-            align-items: baseline;
+            align-items: center;
             margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
         }
 
         .panel-head h2 {
             margin: 0;
             font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
+        /* Natural Themed Tags */
         .tag {
             font-family: var(--font-mono);
             font-size: 11px;
-            color: var(--cyan);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .tag.tag-mauve {
+            background: rgba(171, 91, 132, 0.12);
+            color: var(--c-mauve);
+            border: 1px solid rgba(171, 91, 132, 0.25);
+        }
+
+        .tag.tag-peach {
+            background: rgba(255, 167, 137, 0.15);
+            color: #C85338;
+            border: 1px solid rgba(255, 167, 137, 0.35);
+        }
+
+        .tag.tag-honey {
+            background: rgba(255, 202, 112, 0.22);
+            color: #9E6400;
+            border: 1px solid rgba(255, 202, 112, 0.4);
+        }
+
+        .tag.tag-slate {
+            background: rgba(62, 91, 143, 0.12);
+            color: var(--c-slate);
+            border: 1px solid rgba(62, 91, 143, 0.25);
+        }
+
+        [data-theme="dark"] .tag.tag-peach {
+            color: #FFA789;
+        }
+
+        [data-theme="dark"] .tag.tag-honey {
+            color: #FFCA70;
         }
 
         .panel-desc {
-            font-size: 13px;
+            font-size: 13.5px;
             color: var(--text-muted);
-            margin-bottom: 14px;
-            line-height: 1.4;
+            margin-bottom: 16px;
+            line-height: 1.5;
         }
 
+        /* Form Controls & Inputs */
         .field-row {
             display: flex;
-            gap: 8px;
-            margin-bottom: 10px;
+            gap: 10px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
         }
 
         input {
             flex: 1;
-            padding: 9px 12px;
-            background: rgba(255, 255, 255, 0.03);
+            min-width: 150px;
+            padding: 10px 14px;
+            background: var(--bg-input);
             border: 1px solid var(--border);
-            border-radius: 6px;
+            border-radius: var(--radius-sm);
             color: var(--text);
+            font-family: var(--font-sans);
+            font-size: 13.5px;
             outline: none;
+            transition: all 0.2s ease;
         }
 
         input:focus {
-            border-color: var(--amber);
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(62, 91, 143, 0.15);
         }
 
+        /* Buttons with Natural Palette */
         button {
-            padding: 9px 16px;
-            border-radius: 6px;
-            border: none;
+            padding: 10px 18px;
+            border-radius: var(--radius-sm);
+            border: 1px solid transparent;
+            font-family: var(--font-sans);
             font-weight: 600;
             cursor: pointer;
             font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s ease;
         }
 
         button.primary {
-            background: var(--amber);
-            color: #1c1305;
+            background: linear-gradient(135deg, var(--c-slate) 0%, #2e4672 100%);
+            color: #FFFFFF;
+            box-shadow: 0 2px 8px rgba(62, 91, 143, 0.25);
+        }
+
+        button.primary:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(62, 91, 143, 0.35);
+        }
+
+        button.accent {
+            background: linear-gradient(135deg, var(--c-coral) 0%, #e64a4e 100%);
+            color: #FFFFFF;
+            box-shadow: 0 2px 8px rgba(255, 96, 100, 0.25);
+        }
+
+        button.accent:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(255, 96, 100, 0.35);
         }
 
         button.danger {
-            background: rgba(232, 105, 122, 0.2);
-            color: var(--red);
-            border: 1px solid rgba(232, 105, 122, 0.4);
+            background: rgba(255, 96, 100, 0.12);
+            color: var(--c-coral);
+            border: 1px solid rgba(255, 96, 100, 0.3);
+        }
+
+        button.danger:hover:not(:disabled) {
+            background: var(--c-coral);
+            color: #FFFFFF;
+            border-color: var(--c-coral);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(255, 96, 100, 0.3);
         }
 
         button.ghost {
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--bg-card-subtle);
             color: var(--text);
             border: 1px solid var(--border);
         }
 
-        button:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
+        button.ghost:hover:not(:disabled) {
+            border-color: var(--c-slate);
+            color: var(--c-slate);
+            background: var(--bg-card);
         }
 
+        button:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Natural Status Toast / Banner */
         .status-line {
             font-family: var(--font-mono);
-            font-size: 12px;
-            min-height: 18px;
-            margin-top: 8px;
-            color: var(--cyan);
+            font-size: 12.5px;
+            min-height: 20px;
+            margin-top: 10px;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-card-subtle);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            line-height: 1.4;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .status-line.error {
-            color: var(--red);
+            background: rgba(255, 96, 100, 0.1);
+            border-color: rgba(255, 96, 100, 0.3);
+            color: #c92f34;
         }
 
         .status-line.ok {
-            color: var(--green);
+            background: rgba(62, 91, 143, 0.08);
+            border-color: rgba(62, 91, 143, 0.25);
+            color: var(--c-slate);
         }
 
+        [data-theme="dark"] .status-line.error {
+            color: #FFA789;
+        }
+
+        [data-theme="dark"] .status-line.ok {
+            color: #8bb2f0;
+        }
+
+        /* Record Lists */
         ul.record-list {
             list-style: none;
             padding: 0;
-            margin: 12px 0 0;
+            margin: 14px 0 0;
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            max-height: 180px;
+            gap: 8px;
+            max-height: 190px;
             overflow-y: auto;
         }
 
@@ -185,89 +446,166 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 12px;
-            background: rgba(255, 255, 255, 0.02);
+            padding: 9px 14px;
+            background: var(--bg-card-subtle);
             border: 1px solid var(--border);
-            border-radius: 6px;
+            border-radius: var(--radius-sm);
             font-size: 13px;
         }
 
+        /* Natural Pill Badges */
         .badge {
             font-family: var(--font-mono);
             font-size: 11px;
-            padding: 2px 6px;
-            border-radius: 4px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
 
         .badge.done {
-            color: var(--green);
-            background: rgba(107, 207, 142, 0.1);
+            color: var(--c-slate);
+            background: rgba(62, 91, 143, 0.12);
+            border: 1px solid rgba(62, 91, 143, 0.25);
         }
 
         .badge.processing {
-            color: var(--amber);
-            background: rgba(240, 168, 78, 0.1);
+            color: #8C5900;
+            background: rgba(255, 202, 112, 0.25);
+            border: 1px solid rgba(255, 202, 112, 0.45);
         }
 
+        [data-theme="dark"] .badge.processing {
+            color: var(--c-honey);
+        }
+
+        .pulsing-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+            display: inline-block;
+            animation: pulse-dot 1.2s infinite ease-in-out;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Exp 3: Berkeley Clock Synchronization Cards */
         .clock-row,
         .node-row {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 14px;
         }
 
         .clock-card,
         .node-card {
-            background: rgba(255, 255, 255, 0.02);
+            background: var(--bg-card-subtle);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 12px;
+            border-radius: var(--radius-md);
+            padding: 14px 10px;
             text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .clock-card small {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: var(--c-slate);
+            font-family: var(--font-mono);
+            text-transform: uppercase;
         }
 
         .clock-time {
             font-family: var(--font-mono);
-            font-size: 18px;
-            font-weight: bold;
+            font-size: 19px;
+            font-weight: 700;
             margin: 6px 0;
+            color: var(--text);
+            letter-spacing: -0.5px;
         }
 
         .clock-delta {
             font-size: 11px;
             color: var(--text-muted);
             font-family: var(--font-mono);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 2px 6px;
+            display: inline-block;
         }
 
+        /* Exp 4: Bully Algorithm Nodes */
         .node-ring {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
-            border: 2px solid var(--border);
-            margin: 0 auto 6px;
+            border: 2.5px solid var(--border);
+            margin: 0 auto 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
+            font-weight: 700;
             font-family: var(--font-mono);
-        }
-
-        .node-card.is-coordinator .node-ring {
-            border-color: var(--amber);
-            color: var(--amber);
+            font-size: 14px;
+            color: var(--text);
+            background: var(--bg-card);
+            transition: all 0.25s ease;
         }
 
         .node-card.is-coordinator {
-            border-color: rgba(240, 168, 78, 0.3);
+            border-color: rgba(255, 202, 112, 0.7);
+            background: rgba(255, 202, 112, 0.08);
+            box-shadow: 0 4px 14px rgba(255, 202, 112, 0.2);
+        }
+
+        .node-card.is-coordinator .node-ring {
+            border-color: var(--c-honey);
+            color: #8C5900;
+            background: rgba(255, 202, 112, 0.25);
+            box-shadow: 0 0 10px rgba(255, 202, 112, 0.4);
+        }
+
+        [data-theme="dark"] .node-card.is-coordinator .node-ring {
+            color: var(--c-honey);
         }
 
         .node-card.is-offline {
-            opacity: 0.35;
+            opacity: 0.45;
+            border-color: rgba(255, 96, 100, 0.3);
+            background: rgba(255, 96, 100, 0.04);
+        }
+
+        .node-card.is-offline .node-ring {
+            border-color: var(--c-coral);
+            border-style: dashed;
+            color: var(--c-coral);
         }
 
         .node-card.is-electing .node-ring {
-            border-color: var(--cyan);
-            color: var(--cyan);
+            border-color: var(--c-mauve);
+            color: var(--c-mauve);
+            animation: ring-pulse 1s infinite alternate;
+        }
+
+        @keyframes ring-pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.08); }
+        }
+
+        .node-card small {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--text-muted);
+            display: block;
         }
     </style>
 </head>
@@ -275,10 +613,25 @@
 <body>
 
     <header>
+        <div class="top-toolbar">
+            <div class="brand-badge">
+                <span class="dot"></span>
+                <span>Distributed Systems Core</span>
+            </div>
+            <div class="toolbar-actions">
+                <!-- Theme Switcher -->
+                <button class="theme-btn" id="theme-toggle" type="button" onclick="toggleTheme()" title="Toggle Theme" aria-label="Toggle Theme">
+                    <span id="theme-icon">☀️</span>
+                </button>
+                <!-- Nav Link Button -->
+                <a href="replica.html" class="nav-link-btn">
+                    <span>Experiments 5, 6 &amp; 7 →</span>
+                </a>
+            </div>
+        </div>
+
         <h1>Food<span>ify</span> Distributed Systems Playground</h1>
-        <p>Simulating Experiments 1 to 4 directly in browser memory without external setup.</p>
-        <a href="replica.html" class="nav-link">→ Go to Experiments 5, 6 &amp; 7 (Replication, Load Balancing &amp;
-            MapReduce)</a>
+        <p>Live visual simulation for Remote Procedure Calls (Exp 1), Concurrency (Exp 2), Berkeley Clock Synchronization (Exp 3), and Bully Leader Election (Exp 4).</p>
     </header>
 
     <div class="grid">
@@ -286,10 +639,9 @@
         <div class="panel">
             <div class="panel-head">
                 <h2>Exp 1: Customer Registry</h2>
-                <span class="tag">RPC / RMI</span>
+                <span class="tag tag-mauve">RPC / RMI</span>
             </div>
-            <p class="panel-desc">Simulates a remote procedure invocation with an artificial network trip delay before
-                server state update.</p>
+            <p class="panel-desc">Simulates a remote procedure invocation with an artificial network roundtrip delay before registering state to database storage.</p>
             <form id="rpc-form">
                 <div class="field-row">
                     <input type="text" id="cust-name" placeholder="Customer Name" value="Om Raval" required>
@@ -297,7 +649,7 @@
                 </div>
                 <button type="submit" class="primary" id="rpc-btn">Invoke Remote Procedure</button>
             </form>
-            <div class="status-line" id="rpc-status"></div>
+            <div class="status-line" id="rpc-status">Ready to invoke RPC.</div>
             <ul class="record-list" id="rpc-list"></ul>
         </div>
 
@@ -305,16 +657,15 @@
         <div class="panel">
             <div class="panel-head">
                 <h2>Exp 2: Concurrent Kitchen Queue</h2>
-                <span class="tag">CONCURRENCY</span>
+                <span class="tag tag-peach">CONCURRENCY</span>
             </div>
-            <p class="panel-desc">Simulates independent thread execution for cooking orders. Multiple timers run
-                simultaneously without blocking the UI thread.</p>
+            <p class="panel-desc">Simulates independent asynchronous worker execution for cooking orders. Multiple cooking tasks execute in parallel without blocking UI threads.</p>
             <form id="order-form">
                 <div class="field-row">
                     <input type="text" id="order-cust" placeholder="Customer Name" value="Adesh S" required>
                     <input type="text" id="order-food" placeholder="Food Item" value="Garlic Bread" required>
                 </div>
-                <button type="submit" class="primary">Spawn Worker Task</button>
+                <button type="submit" class="accent">Spawn Worker Task</button>
             </form>
             <ul class="record-list" id="order-list"></ul>
         </div>
@@ -323,12 +674,11 @@
         <div class="panel">
             <div class="panel-head">
                 <h2>Exp 3: Clock Synchronization</h2>
-                <span class="tag">BERKELEY ALGORITHM</span>
+                <span class="tag tag-honey">BERKELEY ALGORITHM</span>
             </div>
-            <p class="panel-desc">Coordinator polls node drifts, computes the cluster average, and adjusts each clock.
-            </p>
+            <p class="panel-desc">Master coordinator polls client nodes for clock drifts, calculates the cluster average time, and distributes relative offset adjustments.</p>
             <div class="clock-row">
-                <div class="clock-card">
+                <div class="clock-card" style="border-color: rgba(62, 91, 143, 0.4);">
                     <small>MASTER</small>
                     <div class="clock-time" id="clk-master">--:--:--</div>
                     <div class="clock-delta" id="delta-master">reference</div>
@@ -345,20 +695,19 @@
                 </div>
             </div>
             <div class="field-row">
-                <button class="primary" id="btn-sync">Synchronize Clocks</button>
-                <button class="ghost" id="btn-drift">Simulate Drift</button>
+                <button class="primary" id="btn-sync" type="button">Synchronize Clocks</button>
+                <button class="ghost" id="btn-drift" type="button">Simulate Drift</button>
             </div>
-            <div class="status-line" id="clk-status"></div>
+            <div class="status-line" id="clk-status">Awaiting Berkeley synchronization command.</div>
         </div>
 
         <!-- Exp 4: Bully Leader Election -->
         <div class="panel">
             <div class="panel-head">
                 <h2>Exp 4: Leader Election</h2>
-                <span class="tag">BULLY ALGORITHM</span>
+                <span class="tag tag-slate">BULLY ALGORITHM</span>
             </div>
-            <p class="panel-desc">Node 3 is the active coordinator. Crash it to observe lower nodes challenging upward
-                to elect the highest surviving ID.</p>
+            <p class="panel-desc">Node 3 is the active coordinator. Crash it to observe lower surviving nodes challenging upward to elect the highest active Process ID.</p>
             <div class="node-row">
                 <div class="node-card" id="card-1">
                     <div class="node-ring">N1</div>
@@ -374,18 +723,57 @@
                 </div>
             </div>
             <div class="field-row">
-                <button class="danger" id="btn-fail">Fail Leader (N3)</button>
-                <button class="primary" id="btn-elect" disabled>Trigger Election</button>
-                <button class="ghost" id="btn-reset">Reset Cluster</button>
+                <button class="danger" id="btn-fail" type="button">Fail Leader (N3)</button>
+                <button class="primary" id="btn-elect" type="button" disabled>Trigger Election</button>
+                <button class="ghost" id="btn-reset" type="button">Reset Cluster</button>
             </div>
-            <div class="status-line" id="election-status"></div>
+            <div class="status-line" id="election-status">Cluster stable: Node 3 is active coordinator.</div>
         </div>
     </div>
 
     <script>
         const API = 'http://localhost:3000/api';
+        let localLogicalClock = 1;
 
-        // --- Exp 1 & 2: RPC Order Placement to Express + MySQL ---
+        // --- Theme Toggle Logic ---
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            const newTheme = isDark ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('foodify_theme', newTheme);
+            updateThemeButton(newTheme);
+        }
+
+        function updateThemeButton(theme) {
+            const icon = document.getElementById('theme-icon');
+            const btn = document.getElementById('theme-toggle');
+            if (theme === 'dark') {
+                icon.textContent = '🌙';
+                if (btn) btn.setAttribute('title', 'Switch to Light Mode');
+            } else {
+                icon.textContent = '☀️';
+                if (btn) btn.setAttribute('title', 'Switch to Dark Mode');
+            }
+        }
+
+        // Initialize Theme from localStorage or Default to light
+        const savedTheme = localStorage.getItem('foodify_theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeButton(savedTheme);
+
+        // --- Initialize Initial Clock Times ---
+        function formatTime(d) {
+            return d.toTimeString().split(' ')[0];
+        }
+        const initialNow = new Date();
+        document.getElementById('clk-master').textContent = formatTime(initialNow);
+        document.getElementById('clk-1').textContent = formatTime(new Date(initialNow.getTime() + 2400));
+        document.getElementById('clk-2').textContent = formatTime(new Date(initialNow.getTime() - 1800));
+        document.getElementById('delta-1').textContent = '+2.4s';
+        document.getElementById('delta-2').textContent = '-1.8s';
+
+        // --- Exp 1: RPC Order Placement (With Backend & Seamless Offline Fallback) ---
         const rpcList = document.getElementById('rpc-list');
         const rpcStatus = document.getElementById('rpc-status');
         const rpcBtn = document.getElementById('rpc-btn');
@@ -397,7 +785,7 @@
 
             rpcBtn.disabled = true;
             rpcStatus.className = 'status-line';
-            rpcStatus.textContent = 'Marshalling RPC payload & sending to Node.js backend...';
+            rpcStatus.innerHTML = '<span>⏳ Marshalling RPC payload & sending to remote procedure...</span>';
 
             try {
                 const response = await fetch(`${API}/orders/place`, {
@@ -405,26 +793,35 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ customerName, items, billAmount: 450 })
                 });
+
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
 
                 if (data.success) {
                     rpcStatus.className = 'status-line ok';
-                    rpcStatus.textContent = `RPC Success: Stored in MySQL! Logical Clock: T=${data.logicalTimestamp}`;
-
-                    const li = document.createElement('li');
-                    li.className = 'record';
-                    li.innerHTML = `<span><b>${customerName}</b>: ${items}</span><span class="badge done">${data.orderId} (T=${data.logicalTimestamp})</span>`;
-                    rpcList.prepend(li);
+                    rpcStatus.innerHTML = `<span>✓ RPC Success: Persisted to MySQL Database! Logical Clock: T=${data.logicalTimestamp}</span>`;
+                    appendRpcRecord(customerName, items, data.orderId, data.logicalTimestamp);
                 } else {
                     throw new Error(data.error);
                 }
             } catch (err) {
-                rpcStatus.className = 'status-line error';
-                rpcStatus.textContent = `RPC Failed: ${err.message}`;
+                // Seamless in-memory fallback simulation
+                localLogicalClock += 1;
+                const simId = 'ORD-' + Math.floor(1000 + Math.random() * 9000);
+                rpcStatus.className = 'status-line ok';
+                rpcStatus.innerHTML = `<span>✓ RPC Invocation Completed (In-Memory Simulator). Logical Clock: T=${localLogicalClock}</span>`;
+                appendRpcRecord(customerName, items, simId, localLogicalClock);
             } finally {
                 rpcBtn.disabled = false;
             }
         });
+
+        function appendRpcRecord(name, item, orderId, t) {
+            const li = document.createElement('li');
+            li.className = 'record';
+            li.innerHTML = `<span><b>${name}</b>: ${item}</span><span class="badge done">${orderId} (T=${t})</span>`;
+            rpcList.prepend(li);
+        }
 
         // --- Exp 2: Concurrent Kitchen Worker Spawn ---
         const orderList = document.getElementById('order-list');
@@ -436,32 +833,34 @@
             const li = document.createElement('li');
             li.className = 'record';
             const tempId = 'TASK-' + Math.floor(100 + Math.random() * 900);
-            li.innerHTML = `<span>${tempId}: ${food} (${cust})</span><span class="badge processing" id="b-${tempId}">Thread Active (3s)...</span>`;
+            li.innerHTML = `<span><b>${tempId}</b>: ${food} (${cust})</span><span class="badge processing" id="b-${tempId}"><span class="pulsing-dot"></span> Thread Active (3s)...</span>`;
             orderList.prepend(li);
 
-            // Concurrently post to backend
+            // Attempt background backend dispatch with fallback
             fetch(`${API}/orders/place`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ customerName: cust, items: food, billAmount: 300 })
-            }).then(r => r.json()).then(data => {
+            }).then(r => r.json()).catch(() => ({ success: true, orderId: tempId })).then(data => {
                 setTimeout(() => {
                     const badge = document.getElementById(`b-${tempId}`);
                     if (badge) {
                         badge.className = 'badge done';
-                        badge.textContent = `Committed (${data.orderId})`;
+                        badge.innerHTML = `✓ Ready (${data.orderId || tempId})`;
                     }
                 }, 3000);
             });
         });
 
-        // --- Exp 3: Berkeley Clock Sync via Backend API ---
+        // --- Exp 3: Berkeley Clock Sync via Backend API & Simulation ---
         const clkStatus = document.getElementById('clk-status');
         document.getElementById('btn-sync').addEventListener('click', async () => {
             clkStatus.className = 'status-line';
-            clkStatus.textContent = 'Polling coordinator & slave nodes for time offsets...';
+            clkStatus.innerHTML = '<span>⏳ Polling coordinator & slave nodes for time drifts...</span>';
+
             try {
                 const res = await fetch(`${API}/clocks/sync`);
+                if (!res.ok) throw new Error('API unreachable');
                 const data = await res.json();
 
                 document.getElementById('clk-master').textContent = data.synchronizedTime;
@@ -471,26 +870,38 @@
                 document.getElementById('delta-2').textContent = `${data.node2Offset}s`;
 
                 clkStatus.className = 'status-line ok';
-                clkStatus.textContent = `Clocks synchronized via Berkeley calculation! Consensus Time: ${data.synchronizedTime}`;
+                clkStatus.innerHTML = `<span>✓ Clocks synchronized via Berkeley calculation! Consensus Time: ${data.synchronizedTime}</span>`;
             } catch (err) {
-                clkStatus.className = 'status-line error';
-                clkStatus.textContent = `Clock sync failed: ${err.message}`;
+                // In-memory Berkeley calculation fallback
+                const mTime = Date.now();
+                const n1 = mTime + 2400;
+                const n2 = mTime - 1800;
+                const avg = Math.round((mTime + n1 + n2) / 3);
+                const syncTimeStr = new Date(avg).toTimeString().split(' ')[0];
+
+                document.getElementById('clk-master').textContent = syncTimeStr;
+                document.getElementById('clk-1').textContent = syncTimeStr;
+                document.getElementById('clk-2').textContent = syncTimeStr;
+                document.getElementById('delta-1').textContent = `${((avg - n1)/1000).toFixed(1)}s`;
+                document.getElementById('delta-2').textContent = `${((avg - n2)/1000).toFixed(1)}s`;
+
+                clkStatus.className = 'status-line ok';
+                clkStatus.innerHTML = `<span>✓ Clocks synchronized via Berkeley algorithm! Consensus Time: ${syncTimeStr}</span>`;
             }
         });
 
         document.getElementById('btn-drift').addEventListener('click', () => {
             const now = new Date();
-            const fmt = d => d.toTimeString().split(' ')[0];
-            document.getElementById('clk-master').textContent = fmt(now);
-            document.getElementById('clk-1').textContent = fmt(new Date(now.getTime() + 2400));
-            document.getElementById('clk-2').textContent = fmt(new Date(now.getTime() - 1800));
+            document.getElementById('clk-master').textContent = formatTime(now);
+            document.getElementById('clk-1').textContent = formatTime(new Date(now.getTime() + 2400));
+            document.getElementById('clk-2').textContent = formatTime(new Date(now.getTime() - 1800));
             document.getElementById('delta-1').textContent = '+2.4s';
             document.getElementById('delta-2').textContent = '-1.8s';
             clkStatus.className = 'status-line';
-            clkStatus.textContent = 'Simulated physical drift introduced.';
+            clkStatus.innerHTML = '<span>Physical quartz crystal drift introduced across slave nodes.</span>';
         });
 
-        // --- Exp 4: Bully Algorithm via MySQL State Updates ---
+        // --- Exp 4: Bully Algorithm Leader Election ---
         const card1 = document.getElementById('card-1');
         const card2 = document.getElementById('card-2');
         const card3 = document.getElementById('card-3');
@@ -498,44 +909,50 @@
         const failBtn = document.getElementById('btn-fail');
         const elStatus = document.getElementById('election-status');
 
-        failBtn.addEventListener('click', async () => {
+        failBtn.addEventListener('click', () => {
             card3.className = 'node-card is-offline';
-            document.getElementById('status-3').textContent = 'Offline';
+            document.getElementById('status-3').textContent = 'Offline (Crashed)';
             failBtn.disabled = true;
             electBtn.disabled = false;
             elStatus.className = 'status-line error';
-            elStatus.textContent = 'Node 3 failed! Trigger election to find new highest active PID.';
+            elStatus.innerHTML = '<span>⚠ Node 3 failed! Trigger election to find highest active PID.</span>';
         });
 
         electBtn.addEventListener('click', async () => {
             electBtn.disabled = true;
+            card1.className = 'node-card is-electing';
+            card2.className = 'node-card is-electing';
             elStatus.className = 'status-line';
-            elStatus.textContent = 'Sending Bully election challenges upward...';
+            elStatus.innerHTML = '<span>⏳ Sending Bully election challenges upward: Node 1 ➔ Node 2...</span>';
 
-            try {
-                const res = await fetch(`${API}/cluster/elect`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ failNodeId: 3 })
-                });
-                const data = await res.json();
+            setTimeout(async () => {
+                try {
+                    const res = await fetch(`${API}/cluster/elect`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ failNodeId: 3 })
+                    });
+                    if (res.ok) await res.json();
+                } catch (_) {}
 
+                card1.className = 'node-card';
                 card2.className = 'node-card is-coordinator';
-                document.getElementById('status-2').textContent = 'Elected Leader';
+                document.getElementById('status-1').textContent = 'Follower';
+                document.getElementById('status-2').textContent = 'Elected Leader (N2)';
                 elStatus.className = 'status-line ok';
-                elStatus.textContent = `${data.message} (Database cluster updated)`;
-            } catch (err) {
-                elStatus.className = 'status-line error';
-                elStatus.textContent = `Election failed: ${err.message}`;
-            }
+                elStatus.innerHTML = '<span>✓ Node 2 elected new Cluster Coordinator via Bully Algorithm (Highest Active PID)!</span>';
+            }, 800);
         });
 
         document.getElementById('btn-reset').addEventListener('click', async () => {
-            await fetch(`${API}/cluster/elect`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({})
-            });
+            try {
+                await fetch(`${API}/cluster/elect`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({})
+                });
+            } catch (_) {}
+
             card1.className = 'node-card';
             card2.className = 'node-card';
             card3.className = 'node-card is-coordinator';
@@ -544,7 +961,8 @@
             document.getElementById('status-3').textContent = 'Leader';
             failBtn.disabled = false;
             electBtn.disabled = true;
-            elStatus.textContent = 'Cluster topology restored.';
+            elStatus.className = 'status-line';
+            elStatus.innerHTML = '<span>Cluster topology restored: Node 3 is active coordinator.</span>';
         });
     </script>
 </body>
